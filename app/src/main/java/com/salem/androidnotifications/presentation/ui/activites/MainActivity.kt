@@ -209,53 +209,53 @@ class MainActivity : AppCompatActivity() {
     }
 
 
-    private fun getAccessToken() {
-
-        val scopes = listOf(
-            "https://www.googleapis.com/auth/firebase.messaging",
-            "https://www.googleapis.com/auth/cloud-platform"
-        )
-
-        fetchAccessToken(
-            this,
-            scopes,
-            notificationServiceAccountJsonFile = R.raw.notification_service_account, // get a file service account from firebase console -- project setting --  service accounts   -> choose java   and click on generate a new private key
-            onSuccess = { accessToken ->
-
-                // by getting access token you can send a FCM remote notification to some topic or to user
-
-
-                // Example  -> 1
-                // by send a notification to topic this mean all user have subscribed the topic will receive a notification
-//                sendNotificationToTopic(
-//                    topic = "Weather",
-//                    accessToken = accessToken,
-//                    data = mapOf(
-//                        "logo_image" to "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQXMSWIWAlex9VThDh8XjpVd0noYacIuPgCmQ&s",
-//                        "expanded_image" to "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcT3OItiHanoLSPt_j9cMj7U1t_4Ft4_Zun2Kg&s"
-//                    )
-//                )
-
-
-                // Example 2 Send a FCM To User with access token and device token
-//                sendNotificationToUser(
-//                    accessToken  = accessToken,
-//                    deviceToken  = deviceToken ?: "",
-//                    data = mapOf(
-//                        "logo_image" to "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcT3OItiHanoLSPt_j9cMj7U1t_4Ft4_Zun2Kg&s",
-//                        "expanded_image" to "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcT3OItiHanoLSPt_j9cMj7U1t_4Ft4_Zun2Kg&s"
-//                    )
-//                )
-                Log.e("TestFcm", "Access token $accessToken")
-            },
-            onFailure = {
-                Log.e("TestFcm", it.toString())
-                Toast.makeText(this, "Failed to get Access token ${it.message}", Toast.LENGTH_SHORT)
-                    .show()
-            },
-        )
-
-    }
+//    private fun getAccessToken() {
+//
+//        val scopes = listOf(
+//            "https://www.googleapis.com/auth/firebase.messaging",
+//            "https://www.googleapis.com/auth/cloud-platform"
+//        )
+//
+//        fetchAccessToken(
+//            this,
+//            scopes,
+//            notificationServiceAccountJsonFile = R.raw.notification_service_account, // get a file service account from firebase console -- project setting --  service accounts   -> choose java   and click on generate a new private key
+//            onSuccess = { accessToken ->
+//
+//                // by getting access token you can send a FCM remote notification to some topic or to user
+//
+//
+//                // Example  -> 1
+//                // by send a notification to topic this mean all user have subscribed the topic will receive a notification
+////                sendNotificationToTopic(
+////                    topic = "Weather",
+////                    accessToken = accessToken,
+////                    data = mapOf(
+////                        "logo_image" to "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQXMSWIWAlex9VThDh8XjpVd0noYacIuPgCmQ&s",
+////                        "expanded_image" to "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcT3OItiHanoLSPt_j9cMj7U1t_4Ft4_Zun2Kg&s"
+////                    )
+////                )
+//
+//
+//                // Example 2 Send a FCM To User with access token and device token
+////                sendNotificationToUser(
+////                    accessToken  = accessToken,
+////                    deviceToken  = deviceToken ?: "",
+////                    data = mapOf(
+////                        "logo_image" to "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcT3OItiHanoLSPt_j9cMj7U1t_4Ft4_Zun2Kg&s",
+////                        "expanded_image" to "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcT3OItiHanoLSPt_j9cMj7U1t_4Ft4_Zun2Kg&s"
+////                    )
+////                )
+//                Log.e("TestFcm", "Access token $accessToken")
+//            },
+//            onFailure = {
+//                Log.e("TestFcm", it.toString())
+//                Toast.makeText(this, "Failed to get Access token ${it.message}", Toast.LENGTH_SHORT)
+//                    .show()
+//            },
+//        )
+//
+//    }
 
 
     private fun sendNotificationToUser(
@@ -360,27 +360,27 @@ class MainActivity : AppCompatActivity() {
     }
 
 
-    private fun fetchTheGoogleCredentials() {
-        val scopes = listOf(
-            "https://www.googleapis.com/auth/firebase.messaging",
-            "https://www.googleapis.com/auth/cloud-platform"
-        )
-
-        fetchGoogleCredentials(
-            context = this,
-            scopes = scopes,
-            notificationServiceAccountJsonFile = R.raw.notification_service_account, // get a file service account from firebase console -- project setting --  service accounts   -> choose java   and click on generate a new private key
-            onSuccess = { credentials ->
-                // Use the GoogleCredentials object as needed
-                Log.e("TestFCM", "credentials $credentials")
-            },
-            onFailure = { exception ->
-                // Handle the failure
-                Log.e("TestFCM", "error $exception")
-                println("Failed to retrieve GoogleCredentials: ${exception.message}")
-            }
-        )
-    }
+//    private fun fetchTheGoogleCredentials() {
+//        val scopes = listOf(
+//            "https://www.googleapis.com/auth/firebase.messaging",
+//            "https://www.googleapis.com/auth/cloud-platform"
+//        )
+//
+//        fetchGoogleCredentials(
+//            context = this,
+//            scopes = scopes,
+//            notificationServiceAccountJsonFile = R.raw.notification_service_account, // get a file service account from firebase console -- project setting --  service accounts   -> choose java   and click on generate a new private key
+//            onSuccess = { credentials ->
+//                // Use the GoogleCredentials object as needed
+//                Log.e("TestFCM", "credentials $credentials")
+//            },
+//            onFailure = { exception ->
+//                // Handle the failure
+//                Log.e("TestFCM", "error $exception")
+//                println("Failed to retrieve GoogleCredentials: ${exception.message}")
+//            }
+//        )
+//    }
 
 
     private fun observeLoadingRemoteFcm() {
