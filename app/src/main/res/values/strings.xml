@@ -1,0 +1,4 @@
+<resources>
+    <string name="app_name">Android Notifications</string>
+    <string name="title_activity_compose">ComposeActivity</string>
+</resources>
