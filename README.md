@@ -313,14 +313,8 @@ class MainActivity : AppCompatActivity() {
    notificationSender.cancelAllNotifications()
 ```
 
-13. **Cancel all your notifications:
 
-```jsx
-   notificationSender.cancelAllNotifications()
-```
-
-
-14. ** Get Device Token:
+13. ** Get Device Token:
 
 ```jsx
 var deviceToken : String ? = null
@@ -336,6 +330,37 @@ var deviceToken : String ? = null
         )
     }
 ```
+
+14. ** Get Access Token:
+
+```jsx
+   private fun getAccessToken() {
+
+        val scopes = listOf(
+            "https://www.googleapis.com/auth/firebase.messaging",
+            "https://www.googleapis.com/auth/cloud-platform"
+        )
+
+        fetchAccessToken(
+            this,
+            scopes,
+            notificationServiceAccountJsonFile = R.raw.notification_service_account, // get a file service account from firebase console -- project setting --  service accounts   -> choose java   and click on generate a new private key
+            onSuccess = { accessToken ->
+
+                // by getting access token you can send a FCM remote notification to some topic or to user
+                Log.e("TestFcm", "Access token $accessToken")
+            },
+            onFailure = {
+                Log.e("TestFcm", it.toString())
+                Toast.makeText(this, "Failed to get Access token ${it.message}", Toast.LENGTH_SHORT)
+                    .show()
+            },
+        )
+
+    }
+
+```
+
 
 
 
