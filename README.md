@@ -66,10 +66,12 @@ dependencyResolutionManagement {
 ```jsx
 
 
+Please note if you are looking to work with firebase and send FCM Remote just  install firebase dependencies if you will not use not import it 
+
 plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.jetbrains.kotlin.android)
-    id("com.google.gms.google-services")
+    id("com.google.gms.google-services")  // optional for firebase
     id("kotlin-kapt")
 }
 
@@ -94,6 +96,7 @@ dependencies {
     implementation("com.github.mhmdsalem33:AndroidNotificationsLibrary:latest-version")
 
 
+     // optional  if you will work with  firebase only import it
      // Firebase dependencies
     implementation(platform("com.google.firebase:firebase-bom:33.5.1"))
     implementation("com.google.firebase:firebase-analytics")
@@ -104,7 +107,21 @@ dependencies {
 }
 ```
 
-3. ** Android Manifest File:
+
+3. Add this dependency in **build.gradle**  Project:
+
+```jsx
+plugins {
+    id("com.google.gms.google-services") version "4.4.2" apply false
+}
+
+ dependencies {
+        classpath("com.google.gms:google-services:4.4.2") 
+    }
+
+```
+
+4. ** Android Manifest File:
 
 ```jsx
 
@@ -146,5 +163,9 @@ class NotificationApp  : Application() {
 
 
 ```
+
+
+
+
 
 
