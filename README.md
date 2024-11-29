@@ -65,10 +65,86 @@ dependencyResolutionManagement {
 
 ```jsx
 
+
+plugins {
+    alias(libs.plugins.android.application)
+    alias(libs.plugins.jetbrains.kotlin.android)
+    id("com.google.gms.google-services")
+    id("kotlin-kapt")
+}
+
+android {
+    packaging {    // add packging 
+        resources {
+            excludes += "/META-INF/{AL2.0,LGPL2.1}"
+            excludes += "META-INF/DEPENDENCIES"
+            excludes += "META-INF/LICENSE"
+            excludes += "META-INF/LICENSE.txt"
+            excludes += "META-INF/NOTICE"
+            excludes += "META-INF/NOTICE.txt"
+        }
+    }
+}
+
+
 dependencies {
+
+
     // Replace 'latest-version' with the actual latest version number
     implementation("com.github.mhmdsalem33:AndroidNotificationsLibrary:latest-version")
+
+
+     // Firebase dependencies
+    implementation(platform("com.google.firebase:firebase-bom:33.5.1"))
+    implementation("com.google.firebase:firebase-analytics")
+    implementation("com.google.firebase:firebase-messaging:23.0.3")
+    implementation("com.google.auth:google-auth-library-oauth2-http:1.3.0")
+
+
 }
+```
+
+3. ** Android Manifest File:
+
+```jsx
+
+    <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.POST_NOTIFICATIONS" />    
+
+
+
+   <application
+        android:name="com.salem.notifications.core.NotificationApp"  // Add App Class  You can add your own app class
+        android:allowBackup="true"
+        android:dataExtractionRules="@xml/data_extraction_rules"
+        android:fullBackupContent="@xml/backup_rules"
+        android:icon="@mipmap/ic_launcher"
+        android:label="@string/app_name"
+        android:roundIcon="@mipmap/ic_launcher_round"
+        android:supportsRtl="true"
+        android:theme="@style/Theme.AndroidNotifications"
+        tools:targetApi="31">
+
+
+
+        <service
+            android:name=".firebase.MyFirebaseMessagingService"
+            android:exported="false">
+            <intent-filter>
+                <action android:name="com.google.firebase.MESSAGING_EVENT" />
+            </intent-filter>
+        </service>
+
+
+class NotificationApp  : Application() {
+    override fun onCreate() {
+        super.onCreate()
+        FirebaseApp.initializeApp(this)    // Init Firebase 
+    }
+}
+
+
+
 ```
 
 
