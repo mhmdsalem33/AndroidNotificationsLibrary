@@ -165,7 +165,7 @@ class NotificationApp  : Application() {
 ```
 
 
-5. **Example :
+5. **Examples :
 
 ```jsx
 
@@ -236,6 +236,111 @@ class MainActivity : AppCompatActivity() {
 
 
 ```
+
+
+7. **Send a basic notification :
+
+```jsx
+
+    notificationSender.sendNotification(
+            notificationId = 1 ,
+            title   =   "Exclusive Discount From Salem!",  // optional
+            content =   "Buffalo Burger: Enjoy 50% off on all burgers today!", // optional
+            icon    =    R.drawable.ic_launcher_foreground,  // optional
+            bigIcon =    BitmapFactory.decodeResource(resources, R.drawable.ic_user), // optional
+            intent  =    Intent(this , MainActivity::class.java)  // optional
+        )
+
+```
+
+
+
+
+8. **Send a Expandable Notification with xml from local:
+
+```jsx
+        notificationSender.showExpandableNotificationXml(
+            context = this,
+            title = "Expand Notification From Salem",
+            content = "Buffalo Burger: Enjoy 50% off on all burgers today!",
+            smallIcon = R.drawable.ic_launcher_foreground,
+            expandImage  = R.drawable.buffalo_burger_disccount_img,
+            intent = Intent(this , MainActivity::class.java),
+            notificationId = 1
+        )
+
+```
+
+
+
+9. **Send a  Expandable Notification with xml and expand img from url:
+    
+```jsx
+         notificationSender.showExpandableNotificationXml(
+            context   = this,
+            title     = "\uD83D\uDD25 Exclusive Discount! \uD83D\uDD25",
+            content   = "Buffalo Burger: Enjoy 40% off on all burgers today!",
+            expandImage    = "https://buffalonlineorderingprod.s3.eu-west-1.amazonaws.com/offers/7d9d03be48a42c120831705d40646f23.png",
+            smallIcon = R.drawable.ic_launcher_foreground ,
+            notificationId = 1,
+            intent = intent
+        )
+```
+10. **Update your notification with the same notification id :
+
+```jsx
+        notificationSender.updateNotificationXml(
+            notificationId = 1 ,
+            title   =   "Exclusive Discount From Salem!",  // optional
+            content =   "Buffalo Burger: Enjoy 50% off on all burgers today!", // optional
+            icon    =    R.drawable.ic_launcher_foreground,  // optional
+            bigIcon =    BitmapFactory.decodeResource(resources, R.drawable.ic_user), // optional
+            intent  =    Intent(this , MainActivity::class.java)  // optional
+        )
+```
+
+
+11. **Cancel your notification with the same notification id you have created notification with :
+
+```jsx
+
+    notificationSender.cancelNotification(1)
+```
+
+12. **Cancel all your notifications:
+
+```jsx
+   notificationSender.cancelAllNotifications()
+```
+
+13. **Cancel all your notifications:
+
+```jsx
+   notificationSender.cancelAllNotifications()
+```
+
+
+14. ** Get Device Token:
+
+```jsx
+var deviceToken : String ? = null
+ private fun getTheDeviceToken() {
+        getDeviceToken(
+            deviceToken = { token ->
+                Log.e("testAccessToken", "device token  $token")
+                deviceToken = token
+            },
+            onFailure = {
+                Log.e("testAccessToken", "Error  token  $it")
+            }
+        )
+    }```
+
+
+
+
+
+
 
 
 
