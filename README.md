@@ -71,8 +71,7 @@ Please note if you are looking to work with firebase and send FCM Remote just  i
 plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.jetbrains.kotlin.android)
-    id("com.google.gms.google-services")  // optional for firebase
-    id("kotlin-kapt")
+    id("com.google.gms.google-services")    // if you will work with firebase
 }
 
 android {
@@ -112,11 +111,11 @@ dependencies {
 
 ```jsx
 plugins {
-    id("com.google.gms.google-services") version "4.4.2" apply false
+    id("com.google.gms.google-services") version "4.4.2" apply false     // if you will work with firebase
 }
 
  dependencies {
-        classpath("com.google.gms:google-services:4.4.2") 
+        classpath("com.google.gms:google-services:4.4.2")   // if you will work with firebase
     }
 
 ```
@@ -143,6 +142,7 @@ plugins {
         tools:targetApi="31">
 
 
+ // if you will work with firebase
 
         <service
             android:name=".firebase.MyFirebaseMessagingService"
@@ -165,6 +165,77 @@ class NotificationApp  : Application() {
 ```
 
 
+5. **Example :
+
+```jsx
+
+
+
+class MainActivity : AppCompatActivity() {
+
+
+    // 1 init the notification sender with your activity or fragment or compose activity
+    private val notificationSender by lazy { NotificationSender(this) } // required
+
+
+    // 2 init fcm view model if you will use the remote fcm   -> Optional
+
+    private val fcmViewModel: FcmViewModel by lazy {
+        val apiService = RetrofitInstance.apiService
+        val fcmRepository = FcmRepositoryImpl(apiService)
+        val sendFcmNotificationUseCase = SendFcmNotificationUseCase(fcmRepository)
+        FcmViewModel(sendFcmNotificationUseCase)
+    }
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        setContentView(R.layout.activity_main)
+
+
+        // 3 Required
+        checkNotificationPermission()
+
+        // 4 set your channel id before create a notification channel
+        NotificationConstants.CHANNEL_ID = "default_channel_id"
+
+
+        // 5 createNotificationChannel  // required
+        notificationSender.createNotificationChannel(
+            channelName = NotificationConstants.CHANNEL_NAME,  // you can change it as you need
+            channelDescription = NotificationConstants.CHANNEL_DESCRIPTION // // you can change it as you need
+        )
+
+
+        //  Example 1 Send a basic notification
+        notificationSender.sendNotification(
+            notificationId = 1,
+            title = "Exclusive Discount From Salem!",  // optional
+            content = "Buffalo Burger: Enjoy 50% off on all burgers today!", // optional
+            icon = R.drawable.ic_launcher_foreground,  // optional
+            bigIcon = BitmapFactory.decodeResource(resources, R.drawable.ic_user), // optional
+            intent = Intent(this, MainActivity::class.java)  // optional
+        )
+
+
+    }
+
+
+    private fun checkNotificationPermission() {
+        requestNotificationPermission { isGranted ->
+            if (isGranted) {
+                Toast.makeText(this, "generated", Toast.LENGTH_SHORT).show()
+
+            } else {
+                Toast.makeText(this, "not generated", Toast.LENGTH_SHORT).show()
+            }
+        }
+    }
+
+
+}
+
+
+```
 
 
 
