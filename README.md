@@ -194,6 +194,7 @@ class MainActivity : AppCompatActivity() {
 
         // 3 Required
         checkNotificationPermission()
+       // RequestNotificationPermission()  // with Jetpack Compose Call this line only
 
         // 4 set your channel id before create a notification channel
         NotificationConstants.CHANNEL_ID = "default_channel_id"
