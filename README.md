@@ -630,6 +630,232 @@ private fun unSubscribeTheTopic(topic: String) {
 
 
 
+24. ** Firebase Messaging Service:
+
+```jsx
+
+ class MyFirebaseMessagingService : FirebaseMessagingService() {
+
+    override fun onNewToken(token: String) {
+        super.onNewToken(token)
+    }
+
+    override fun onMessageReceived(remoteMessage: RemoteMessage) {
+
+
+        // 1-  Get the FCM Send by the notification
+        remoteMessage.notification?.let {
+
+            val notificationTitle = it.title
+            val notificationBody = it.body
+
+
+        }
+
+        // 2-  Get the FCM Send by the Data
+        remoteMessage.data.isNotEmpty().let {
+            val logoImage = remoteMessage.data["logo_image"] ?: "empty logo image"
+            val expandedImage = remoteMessage.data["expanded_image"] ?: "empty expanded image"
+
+            CustomNotificationClass(this ).sendCustomNotification(
+                logoImage = logoImage,
+                expandImage = expandedImage
+            )
+
+            Log.e("testFCM", "Remote logo image is $logoImage")
+            Log.e("testFCM", "Remote expanded image is $expandedImage")
+
+
+        }
+    }
+}
+
+```
+
+
+
+
+24. ** Create a custom notifications work with both xml and jetpack compose:
+
+```jsx
+
+
+1-  create a main layout
+
+    Go to res -> add a new layout named main_notification_layout
+
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:gravity="center_vertical"
+    >
+
+
+
+    <ImageView
+        android:id="@+id/custom_notification_icon"
+        android:layout_width="40dp"
+        android:layout_height="40dp"
+        android:layout_alignParentStart="true"
+        android:layout_alignParentTop="true"
+        android:src="@drawable/ic_launcher_foreground"
+        />
+
+
+    <TextView
+        android:id="@+id/title"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_toEndOf="@id/custom_notification_icon"
+        android:layout_marginStart="10dp"
+        android:text="Custom Title"
+        android:textSize="16sp"
+        android:textStyle="bold" />
+
+    <!-- Message Text -->
+    <TextView
+        android:id="@+id/message"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/title"
+        android:layout_toEndOf="@id/custom_notification_icon"
+        android:layout_marginStart="10dp"
+        android:text="Custom Content"
+        />
+
+
+</RelativeLayout>
+
+
+
+```
+
+ ** Create a second layout ( Expanded layout )   named expanded_notification_layout
+
+```jsx
+
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    >
+
+
+    <ImageView
+        android:id="@+id/custom_notification_icon"
+        android:layout_width="40dp"
+        android:layout_height="40dp"
+        android:src="@drawable/ic_launcher_foreground"
+        android:contentDescription="@null"
+        />
+
+    <TextView
+        android:id="@+id/title"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_toEndOf="@id/custom_notification_icon"
+        android:layout_marginStart="10dp"
+        android:text="Custom Title"
+        android:textSize="16sp"
+        android:textStyle="bold" />
+
+
+    <TextView
+        android:id="@+id/message"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/title"
+        android:layout_toEndOf="@id/custom_notification_icon"
+        android:layout_marginStart="10dp"
+        android:text="Custom Content" />
+
+
+
+    <ImageView
+        android:id="@+id/img_expand"
+        android:layout_width="40dp"
+        android:layout_height="150dp"
+        android:src="@drawable/food_logo"
+        android:contentDescription="@null"
+        android:layout_below="@+id/message"
+        android:layout_alignParentStart="true"
+        android:layout_alignParentEnd="true"
+        android:scaleType="centerCrop"
+        android:layout_marginTop="10dp"
+
+        />
+
+    
+</RelativeLayout>
+
+```
+
+
+
+ ** Create a Custom Notification Class
+
+```jsx
+class CustomNotificationClass( private val context: Context ) {
+
+    fun sendCustomNotification( logoImage: String , expandImage: String ) {
+        CoroutineScope(Dispatchers.IO).launch {
+
+            val bitmapLogoImage       = async {   loadImageFromUrl(logoImage)    }.await()   // loadImageFromUrl fun  will convert it to BitMap
+            val bitmapExpandedImage   = async {   loadImageFromUrl(expandImage)  }.await()
+
+            val customView = RemoteViews( context.packageName, R.layout.main_notification_layout ).apply {
+                setTextViewText(R.id.title, "\uD83D\uDD25 Exclusive Discount!")
+                setTextViewText(R.id.message, "Buffalo Burger: Enjoy 50% off on all burgers today!")
+                setImageViewBitmap(R.id.custom_notification_icon, bitmapLogoImage)
+            }
+
+            val notificationLayoutExpanded =
+                RemoteViews(context.packageName, R.layout.expanded_notification_layout).apply {
+                    setTextViewText(R.id.title, "\uD83C\uDF54 Buffalo Burger Discount!")
+                    setTextViewText(
+                        R.id.message,
+                        "Treat yourself to a delicious meal! Get 50% off all burgers today only. Don't miss this mouth-watering deal!"
+                    )
+                    setImageViewBitmap(
+                        R.id.custom_notification_icon,
+                        bitmapLogoImage
+                    )
+                    setImageViewBitmap(R.id.img_expand, bitmapExpandedImage)
+                }
+
+
+            val icon = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
+                R.drawable.ic_launcher_foreground
+            } else {
+                R.mipmap.ic_launcher
+            }
+
+            Log.e("testCustom" , "Called")
+
+            NotificationSender(context).sendNotification(
+                notificationId = 1,
+                icon = icon,
+                setPriority = NotificationCompat.PRIORITY_HIGH,
+                setCustomContentView = customView,
+                setCustomBigContentView = notificationLayoutExpanded
+            )
+        }
+    }
+
+}
+
+```
+
+ ** Push your custom notification
+
+```jsx
+
+ CustomNotificationClass(this ).sendCustomNotification(
+                logoImage = "https://scontent.fcai21-4.fna.fbcdn.net/v/t1.6435-9/110249313_10158045681834681_5826574394868309860_n.jpg?_nc_cat=103&ccb=1-7&_nc_sid=a5f93a&_nc_eui2=AeHa1Tms6cyru9CWYZe_AyXx4DX-FVvfQFXgNf4VW99AVbo92PGk5XgNqZ26W5vE4FMzzyVgVy2Ep24VJDVlWbVW&_nc_ohc=cRfLgxTAB6IQ7kNvgEeYqnM&_nc_zt=23&_nc_ht=scontent.fcai21-4.fna&_nc_gid=AbVCH5NIkcqRdNcXUvdp9iG&oh=00_AYCPmL3XrPJpKs_52MRgsH6u2EJwY2juGp3lnQBDQuDksA&oe=67728069",
+                expandImage = "https://images.pexels.com/photos/1448730/pexels-photo-1448730.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=2"
+            )
+```
 
 
 
