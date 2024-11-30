@@ -362,6 +362,274 @@ var deviceToken : String ? = null
 ```
 
 
+15. ** Send Remote FCM To User:
+
+```jsx
+
+
+   private val fcmViewModel: FcmViewModel by lazy {
+        val apiService = RetrofitInstance.apiService
+        val fcmRepository = FcmRepositoryImpl(apiService)
+        val sendFcmNotificationUseCase = SendFcmNotificationUseCase(fcmRepository)
+        FcmViewModel(sendFcmNotificationUseCase)
+    }
+
+
+        sendNotificationToUser(
+            accessToken = "get your access token",
+            deviceToken = "get your device token",
+            data =  mapOf(
+                "logo_image" to "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQXMSWIWAlex9VThDh8XjpVd0noYacIuPgCmQ&s",
+                "expanded_image" to "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcT3OItiHanoLSPt_j9cMj7U1t_4Ft4_Zun2Kg&s"
+            ),
+        )
+
+
+     private fun sendNotificationToUser(
+        accessToken: String,
+        deviceToken: String,
+        notificationTitle: String? = null,  // optional
+        notificationBody: String? = null,  // optional
+        data: Map<String, String> = emptyMap(),
+    ) {
+
+        val message = Message(
+            token = deviceToken,
+            data = data,
+//            notification = Notification(notificationTitle , notificationBody) // optional
+        )
+
+        val notificationRequest = FcmNotificationRequest(message = message)
+
+        fcmViewModel.sendFcmNotification(
+            accessToken = accessToken,
+            projectId = "android-notifications-f597d", // Id of project get it from firebase console
+            fcmNotificationRequest = notificationRequest
+        )
+    }
+
+```
+
+
+16. ** Send Remote FCM To User:
+
+```jsx
+
+
+   private val fcmViewModel: FcmViewModel by lazy {
+        val apiService = RetrofitInstance.apiService
+        val fcmRepository = FcmRepositoryImpl(apiService)
+        val sendFcmNotificationUseCase = SendFcmNotificationUseCase(fcmRepository)
+        FcmViewModel(sendFcmNotificationUseCase)
+    }
+
+          sendNotificationToUser(
+                    accessToken  = "get your access token" ,
+                    deviceToken  = "get your device token" ?: "",
+                    data = mapOf(
+                        "logo_image" to "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcT3OItiHanoLSPt_j9cMj7U1t_4Ft4_Zun2Kg&s",
+                        "expanded_image" to "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcT3OItiHanoLSPt_j9cMj7U1t_4Ft4_Zun2Kg&s"
+                    )
+                )
+
+
+    private fun sendNotificationToTopic(
+        accessToken: String,
+        topic: String,
+        notificationTitle: String? = null, // optional
+        notificationBody: String? = null,  // optional
+        data: Map<String, String> = emptyMap(),
+    ) {
+
+        val message = Message(
+            topic = topic,
+            data = data,
+//            notification = Notification(notificationTitle , notificationBody) // optional
+        )
+
+
+        val notificationRequest =
+            FcmNotificationRequest(message = message)
+
+        fcmViewModel.sendFcmNotification(
+            accessToken = accessToken,
+            projectId = "android-notifications-f597d",   // Id of project get it from firebase console
+            fcmNotificationRequest = notificationRequest
+        )
+
+    }
+
+```
+
+
+
+17. ** Refresh Token:
+
+```jsx
+
+    private fun refreshTheDeviceToken() {
+        refreshDeviceToken(
+            refreshedToken = {
+                Log.e("testAccessToken", "device token  $it")
+            },
+            onFailure = {
+                Log.e("testAccessToken", "Error refresh Token  ${it.message}")
+            }
+        )
+    }
+
+```
+
+
+18. ** Refresh Device Token:
+
+```jsx
+
+  private fun deleteTheDeviceToken() {
+        deleteDeviceToken(
+            onSuccess = {
+                Log.e("testAccessToken", "Device token deleted successfully")
+            },
+            onFailure = {
+                Log.e(
+                    "testAccessToken",
+                    "Something went wrong with delete device token  ${it.message}"
+                )
+            }
+        )
+    }
+
+```
+
+
+19. ** Subscribe The Topic :
+
+```jsx
+
+ subscribeTheTopic("Weather")
+
+ private fun subscribeTheTopic(topic: String) {
+        subscribeTopic(
+            topic, // Topic Name
+            onSuccess = {
+                Toast.makeText(this, "Subscribed", Toast.LENGTH_SHORT).show()
+            },
+            onFailure = {
+                Toast.makeText(this, "Subscribed failed ${it.message}", Toast.LENGTH_SHORT).show()
+            })
+    }
+
+
+```
+
+
+
+20. ** Un Subscribe The Topic :
+
+```jsx
+
+
+unSubscribeTheTopic("Weather")
+
+private fun unSubscribeTheTopic(topic: String) {
+        unSubscribeTopic(
+            topic,
+            onSuccess = {
+                Toast.makeText(this, "Un Subscribed", Toast.LENGTH_SHORT).show()
+            },
+            onFailure = {
+                Toast.makeText(this, "Un Subscribed failed ${it.message}", Toast.LENGTH_SHORT)
+                    .show()
+            })
+    }
+
+```
+
+20. ** Fetch The Google Credentials :
+
+```jsx
+
+
+    private fun fetchTheGoogleCredentials() {
+        val scopes = listOf(
+            "https://www.googleapis.com/auth/firebase.messaging",
+            "https://www.googleapis.com/auth/cloud-platform"
+        )
+
+        fetchGoogleCredentials(
+            context = this,
+            scopes = scopes,
+            notificationServiceAccountJsonFile = R.raw.notification_service_account, // get a file service account from firebase console -- project setting --  service accounts   -> choose java   and click on generate a new private key
+            onSuccess = { credentials ->
+                // Use the GoogleCredentials object as needed
+                Log.e("TestFCM", "credentials $credentials")
+            },
+            onFailure = { exception ->
+                // Handle the failure
+                Log.e("TestFCM", "error $exception")
+                println("Failed to retrieve GoogleCredentials: ${exception.message}")
+            }
+        )
+    }
+
+```
+
+21. ** Observe Loading Remote Fcm:
+
+```jsx
+
+  private fun observeLoadingRemoteFcm() {
+        fcmViewModel.fcmLoading.onEach { loading ->
+            if (loading) {
+                Log.e("TestFcm", "Send Fcm Notification is loading")
+            } else {
+                Log.e("TestFcm", "Send Fcm Notification is stopped")
+            }
+        }.launchIn(lifecycleScope)  // with fragment .launchIn(viewLifecycleOwner.lifecycleScope)
+
+    }
+
+
+```
+
+
+22. ** Observe Success Remote Fcm:
+
+```jsx
+
+     private fun observeSuccessRemoteFcm() {
+        fcmViewModel.fcmResponse.onEach { fcmResponse ->
+            fcmResponse?.let {
+                Toast.makeText(
+                    this,
+                    "Notification sent successfully: ${it.name}",
+                    Toast.LENGTH_SHORT
+                ).show()
+            }
+        }.launchIn(lifecycleScope)  // with fragment .launchIn(viewLifecycleOwner.lifecycleScope)
+    }
+
+
+```
+
+
+23. ** Observe Error Remote Fcm:
+
+```jsx
+
+  private fun observeErrorRemoteFcm() {
+        fcmViewModel.error.onEach { fcmError ->
+            fcmError?.let {
+                Log.e("TestFcm", "Error to send a fcm notification $fcmError")
+            }
+        }.launchIn(lifecycleScope) // with fragment .launchIn(viewLifecycleOwner.lifecycleScope)
+    }
+
+```
+
+
+
+
 
 
 
